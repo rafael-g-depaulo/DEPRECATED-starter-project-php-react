@@ -1,7 +1,7 @@
 // this is a gulpfile. it has tasks that can be run from the commandline with "gulp [task]"
 // if no task is provided, the default task will be executed
 
-import gulp from "gulp"
+import gulp, { dest } from "gulp"
 import babelify from 'babelify'
 import uglify from 'gulp-uglify'
 import browserify from 'browserify'
@@ -13,6 +13,7 @@ const path = {
   build: './build',
   main: 'index.js',
   bundle: 'bundle.js',
+  get code() { return `${this.source}/**/*.js` },
 }
 
 const babelConfig = {
@@ -31,18 +32,19 @@ const build = () => browserify({
 
 // write bundled code to build path
 const buildDev = () => build()
-  .pipe(gulp.dest(path.build))
+  .pipe(dest(path.build))
 
 // uglify bundled code and write to build path
 const buildProd = () => build()
   .pipe(uglify())
-  .pipe(gulp.dest(path.build))
+  .pipe(dest(path.build))
 
 // build_dev task
 export const build_dev = done => (buildDev(), done())
+export const watch = done => (gulp.watch(path.code, { ignoreInitial: false }, build_dev))
 
 // build_prod task
 export const build_prod = done => (buildProd(), done())
 
 // default task
-export default done => done()
+export default watch
