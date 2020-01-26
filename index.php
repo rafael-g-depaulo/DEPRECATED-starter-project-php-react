@@ -7,6 +7,10 @@
   <title>Title</title>
 </head>
 <body>
-  
+  <!-- React app Root -->
+  <div id="root"></div>
+
+  <!-- Add bundled react script -->
+  <script src="./scripts/build/bundle.js"></script>
 </body>
 </html>
