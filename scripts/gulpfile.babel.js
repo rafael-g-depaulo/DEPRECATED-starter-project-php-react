@@ -15,43 +15,34 @@ const path = {
   bundle: 'bundle.js',
 }
 
-// watch function
-// const watch = task => gulp.watch('src/**/*.js', task)
+const babelConfig = {
+  presets: ['@babel/env', '@babel/react'],
+}
 
+// Bundle the code, run transpilers and bundle it
 const build = () => browserify({
     entries: [`${path.source}/${path.main}`],
     debug: true
   })
-  // .on('error', err => console.log(err))
-  .transform(babelify, {
-    presets: ['@babel/env', '@babel/react']
-  })
+  .transform(babelify, babelConfig)
   .bundle()
   .pipe(source(path.bundle))
   .pipe(buffer())
 
+// write bundled code to build path
 const buildDev = () => build()
   .pipe(gulp.dest(path.build))
 
+// uglify bundled code and write to build path
 const buildProd = () => build()
   .pipe(uglify())
   .pipe(gulp.dest(path.build))
 
 // build_dev task
-export const build_dev = done => {
-  buildDev()
-  return done()
-}
+export const build_dev = done => (buildDev(), done())
 
 // build_prod task
-export const build_prod = done => {
-  buildProd()
-  return done()
-}
+export const build_prod = done => (buildProd(), done())
 
 // default task
-export default done => {
-  console.log("default")
-  // gulp.series(build_dev, gulp.watch('src/**/*.js', build_dev))
-  done()
-}
+export default done => done()
