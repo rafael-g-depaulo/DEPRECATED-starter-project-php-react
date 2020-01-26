@@ -46,5 +46,20 @@ export const watch = done => (gulp.watch(path.code, { ignoreInitial: false }, bu
 // build_prod task
 export const build_prod = done => (buildProd(), done())
 
+// CSS
+import sass from 'gulp-sass'
+const cssPath = {
+  style: './style',
+  fileTypes: ['css', 'scss'],
+  get styleGlobs() { return this.fileTypes.map(ext => `${this.style}/**/*.${ext}`) },
+}
+
+const buildStyles = () => gulp
+  .src(cssPath.styleGlobs)
+  .pipe(sass().on('error', sass.logError))
+  .pipe(dest(path.build))
+
+export const build_styles = done => (buildStyles(), done())
+
 // default task
 export default watch
